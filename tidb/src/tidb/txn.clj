@@ -61,8 +61,8 @@
                                sk  int not null,
                                val " val-type ")")])
         (when (:use-index test)
-          (c/create-index! conn [(str "create index " (table-name i) "_sk_val"
-                                      " on " (table-name i) " (sk, val)")])))))
+          (c/create-index! conn [(str "create index " (table-name i) "_sk"
+                                      " on " (table-name i) " (sk)")])))))
 
   (invoke! [this test op]
     (let [txn      (:value op)
