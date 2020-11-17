@@ -255,7 +255,10 @@
             true (do (info e# :caught (pr-str (ex-data e#)))
                      (info :caught-rollback (:rollback (ex-data e#)))
                      (info :caught-cause    (.cause (:rollback (ex-data e#))))
-                     (throw e#))))))
+                     (throw e#))))
+    (catch Throwable t#
+      (info ">>> oops" t#)
+      (throw t#))))
 
 (defmacro with-txn
   "Executes body in a transaction, with a timeout, automatically retrying
