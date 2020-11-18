@@ -47,6 +47,7 @@
                            " (id, sk, val) values (?, ?, ?)"
                            " on duplicate key update val = CONCAT(val, ',', ?)")
                       k k (str v) (str v)])]
+             (info (str ">>> append " k " " v))
              v))]))
 
 (defrecord Client [conn val-type table-count]
