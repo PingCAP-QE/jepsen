@@ -41,7 +41,7 @@ http://clojure-doc.org/articles/ecosystem/java_jdbc/home.html"}
   (:require [clojure.set :as set]
             [clojure.string :as str]
             [clojure.walk :as walk]
-            [clojure.tools.logging :refer [info warn])
+            [clojure.tools.logging :refer [info warn]])
   (:import (java.net URI)
            (java.sql BatchUpdateException DriverManager
                      PreparedStatement ResultSet ResultSetMetaData
@@ -821,9 +821,10 @@ http://clojure-doc.org/articles/ecosystem/java_jdbc/home.html"}
                   ;; want to try to restore auto-commit...
                   (vreset! restore-ac? false)
                   (.rollback con)
-                  (info ">>> rollbacked")
                   (vreset! restore-ac? true)
+                  (info ">>> rollbacked" t)
                   (catch Throwable rb
+                    (info ">>> rollback error" rb)
                     ;; combine both exceptions
                     (throw (ex-info (str "Rollback failed handling \""
                                          (.getMessage t)

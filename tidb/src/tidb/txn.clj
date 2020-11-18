@@ -41,14 +41,14 @@
                   v)
 
            :append
-           (let [r (c/execute!
-                     conn
-                     [(str "insert into " table
-                           " (id, sk, val) values (?, ?, ?)"
-                           " on duplicate key update val = CONCAT(val, ',', ?)")
-                      k k (str v) (str v)])]
+           (do
              (info (str ">>> append " k " " v))
-             v))]))
+             (let [r (c/execute! conn
+                                 [(str "insert into " table
+                                       " (id, sk, val) values (?, ?, ?)"
+                                       " on duplicate key update val = CONCAT(val, ',', ?)")
+                                 k k (str v) (str v)])]
+              v)))]))
 
 (defrecord Client [conn val-type table-count]
   client/Client
