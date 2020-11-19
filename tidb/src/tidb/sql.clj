@@ -257,7 +257,7 @@
                      (info :caught-cause    (.cause (:rollback (ex-data e#))))
                      (throw e#))))
     (catch Throwable t#
-      (info ">>> oops" t#)
+      (info ">>> unknown exception" t#)
       (throw t#))))
 
 (defmacro with-txn

@@ -805,6 +805,7 @@ http://clojure-doc.org/articles/ecosystem/java_jdbc/home.html"}
               (.setReadOnly con true))
             (.setAutoCommit con false)
             (try
+              (info ">>> start transaction")
               (let [result (func nested-db)]
                 (if (db-is-rollback-only nested-db)
                   (do
