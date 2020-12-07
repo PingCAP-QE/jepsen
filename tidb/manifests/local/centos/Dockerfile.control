@@ -1,0 +1,10 @@
+FROM centos:centos7.6.1810
+
+RUN tar -cf save.tar -C / var/lib/{rpm,yum} \
+ && yum install -y openssh-clients java-1.8.0-openjdk gnuplot \
+ && rm -r /var/cache/yum/* /var/lib/{rpm,yum} \
+ && tar -xf save.tar -C / \
+ && rm save.tar
+RUN mkdir /root/.ssh && touch /root/.ssh/known_hosts
+
+# hub.pingcap.net/qa/jepsen-control:centos7.6

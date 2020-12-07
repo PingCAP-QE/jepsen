@@ -1,0 +1,4 @@
+data-*/
+ssh-key
+ssh-key.pub
+docker-compose.yml

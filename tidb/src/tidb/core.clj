@@ -17,6 +17,7 @@
             [jepsen.os.centos :as centos]
             [tidb [bank :as bank]
                   [db :as db]
+                  [os :as os-ext]
                   [long-fork :as long-fork]
                   [monotonic :as monotonic]
                   [nemesis :as nemesis]
@@ -29,6 +30,7 @@
   "Supported operating systems"
   {"debian" debian/os
    "centos" centos/os
+   "centos-offline" os-ext/centos-offline
    "none"   os/noop})
 
 (def workloads
@@ -383,7 +385,7 @@
     :validate [#{:fixed :random} "Must be either 'fixed' or 'random'"]]
 
    ["-o" "--os NAME" "debian, centos, or none"
-    :default debian/os
+    :default os-ext/centos-offline
     :parse-fn oses
     :validate [identity (jc/one-of oses)]]
 
