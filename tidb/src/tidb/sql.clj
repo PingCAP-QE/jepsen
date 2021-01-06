@@ -25,11 +25,22 @@
    :connectTimeout  connect-timeout
    :socketTimeout   socket-timeout})
 
+(defn txn-mode
+  [test]
+  (let [mode (:txn-mode test "pessimistic")]
+    (if (= "mixed" mode) (rand-nth ["pessimistic" "optimistic"]) mode)))
+
+(defn init-sql
+  [test]
+  (cond-> (:init-sql test)
+          (not= :default (:auto-retry test)) (conj (str "set @@tidb_disable_txn_auto_retry = " (if (:auto-retry test) 0 1)))
+          (not= :default (:auto-retry-limit test)) (conj (str "set @@tidb_retry_limit = " (:auto-retry-limit test 10)))
+          (:follower-read test) (conj "set @@tidb_replica_read = 'follower'")
+          true (conj (str "set @@tidb_txn_mode = '" (txn-mode test) "'"))
+          true (conj "set @@tidb_general_log = 1")))
+
 (defn init-conn!
-  "Sets initial variables on a connection, based on test options. Options are:
-
-  :auto-retry   - If true, automatically retries transactions.
-
+  "Sets initial variables on a connection, based on test options.
   Returns conn."
   [conn test]
   (j/execute! conn ["set @@tidb_enable_amend_pessimistic_txn = 1"])
@@ -59,6 +70,9 @@
     (info :setting-follower-read)
     (j/execute! conn [(str "set @@tidb_replica_read = 'follower'")]))
 
+  (doseq [stmt (init-sql test)]
+    (info (str "init> " stmt))
+    (j/execute! conn [stmt]))
   conn)
 
 (defn open
